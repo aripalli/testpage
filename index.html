@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <title>Assignment 2 Social Data Analysis & Visualization</title>
+      <link rel="Doggy" href="favicon.ico" />
+      <script type="text/javascript" src="d3/d3.js"></script>
+      <script type="text/javascript" src="d3/index.js"></script>
+  	  <style type="text/css">
+		
+  	  	text, h1,h2,p, strong, span {
+  	  		font-family: Helvetica, Arial, sans-serif;
+  	  	}
+
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: black;
+			shape-rendering: crispEdges;
+		}
+		
+		.axis text {
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 11px;
+		}
+
+		.labels {
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 11px;
+			font-weight: bold;
+		}
+
+		#graph_title1, #graph_title2 {
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 20px;
+			text-align: center;
+			font-weight: bold;
+			transition: color 1.5s ease;
+		}
+		.mapDistrict {
+			fill:#E6E6E6;
+		}
+		.mapDistrict:hover {
+			fill:#CCCCCC;
+		}
+
+		.textContainer {
+			  width: 855px;
+			  margin: 0 auto;
+			  text-align: center;
+		}
+
+		button {
+			margin: 0 auto;
+			background-color:#ededed;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #dcdcdc;
+			display:inline-block;
+			cursor:pointer;
+			color:#000000;
+			font-size:15px;
+			font-weight:bold;
+			padding:6px 24px;
+			text-decoration:none;
+		}
+
+		.x.axis path {
+		  display: none;
+		}
+
+		.d3-tip {
+		  line-height: 1;
+		  text-align: center;
+		  padding: 12px;
+		  background: rgba(0, 0, 0, 0.8);
+		  color: #fff;
+		  border-radius: 4px;
+		}
+
+		.tipperCol {
+			color: #B3B3B3;
+		}
+		.narrowtext{
+			display: inline-block;
+			word-wrap: break-word;
+		}
+
+  	  	.K0 { fill: #334D5C;}
+		.K1 { fill: #45B29D;}
+		.K2 { fill: #EFC94C;}
+		.K3 { fill: #E27A3F;}
+		.K4 { fill: #DF5A49;}
+		.K5 { fill: #4F84B9;}
+
+		.K0.meanCircles { fill: #4E758C;}
+		.K1.meanCircles { fill: #5DF0CD;}
+		.K2.meanCircles { fill: #FFDD6B;}
+		.K3.meanCircles { fill: #FF9C63;}
+		.K4.meanCircles { fill: #FF7361;}
+		.K5.meanCircles { fill: #3593D6;}
+
+		.meanCircles {
+			stroke:#FFFFFF;
+			stroke-width: 0.5;
+			transition: fill 1.5s ease
+		}
+		.Viz{
+			text-align:center;
+		}
+
+	</style>
+  </head>
+
+<body>
+		<div>
+		<div class="textContainer" >
+			<h2>Assignment 2A: One scatter plot and two datasets</h2>
+			<p>
+			The scatter plot shows the vehicle theft as a function of prostition crimes in San Francisco.
+			You can visualize how the crimes have decreased from 2003 to 2015 by pressing the button below. Each circle represents a district and the radius of the district is proportional to the total number of all crimes for the given year. Hovering over a point will give you information about the exact numbers.
+			</p>
+			<i>
+			Explain in your own words why you think I want the axes to be the same for both years?
+			</i>
+			<p>
+			If the axes change during the transisition it can be really hard to compare the changes.
+			The main idea with the plot is to show how the crime has changed over the years.
+			If the axes changes then you would have to look at the numbers on the axis to understand this point, instead of just looking at how the points move.
+			</p>
+			<button id="id2003">Click to toggle between 2003 and 2015 data.</button>
+			<p id="graph_title1"></p>
+		</div>
+		<div class="Viz1 Viz"></div>
+
+
+	</div>
+
+	<div class=Visualize1>
+		<div class="textContainer">
+			<h2>Assignment 2B: Visualizing geodata</h2>
+			<p>
+			This geodata visualization shows the result of a K-means algorithm used on the different locations a prostituion instance has been documented in San Francisco.
+			Hovering over the different buttons will give you a preview of the result with the given number of clusters. Clicking the button will then change the picture.
+			Hovering over the districts will tell you the name of the district.
+			</p>
+			<p>
+			Different number of clusters will give different centers for the crime. K=2 is probably a bit too low while K=5 and K=6 is dividing too much. Thus K=3 and K=4 are probably the best
+			choises in this case.
+			</p>
+			<i>
+			Think carefully about how you can minimize the size of the file containing the data. My file is around 700KB. Why is the size of the file important?
+			</i>
+			<p>
+			The file is loaded by the webpage. It is therefore important that it is not too large.
+			Large files take longer time to load and would make the webpage laggy and slow. Our data file is 872 KB which is close to the 700KB Sune has.
+			Even with a data file this small, it can still make the page lag. The data affects the scatter plot transisition, which is a bit laggy.
+			Removing the K-means data from the webpage will make the transisition smooth.
+			</p>
+			<p id="graph_title2"></p>
+			<button id="K2" class="kButton">K2</button>
+			<button id="K3" class="kButton">K3</button>
+			<button id="K4" class="kButton">K4</button>
+			<button id="K5" class="kButton">K5</button>
+			<button id="K6" class="kButton">K6</button>
+		</div>			
+		<div class="VizContainer1 Viz"></div>
+	</div>
+
+	<script type="text/javascript">
+var dataset;
+
+d3.csv("Vis1.csv", function(dataset) {
+		
+//Change strings to numbers
+	dataset.forEach(function(d) {
+		d.ProstitutionCount2003 = +d.ProstitutionCount2003;
+		d.VehicleTheftCount2003= +d.VehicleTheftCount2003;
+		d.TotalCrime2003= +d.TotalCrime2003;
+		d.ProstitutionCount2015 = +d.ProstitutionCount2015;
+		d.VehicleTheftCount2015= +d.VehicleTheftCount2015;
+		d.TotalCrime2015= +d.TotalCrime2015;
+	});
+
+
+
+
+	//Width and height
+	var w = 1200;
+	var h = 600;	
+	var padding = 80;
+	var plotPadY = 250;
+	var plotPadX = 100;
+
+
+	//Create scale functions
+	var xScale = d3.scale.linear()
+						 .domain([0, Math.max(
+		 					d3.max(dataset, function(d) {return d['ProstitutionCount2003']+plotPadX;}),
+		 					d3.max(dataset, function(d) {return d['ProstitutionCount2015']+plotPadX;})
+					 	  )])
+						 .range([padding, w - padding * 2]);
+
+	var yScale = d3.scale.linear()
+						 .domain([0, Math.max(
+					 		d3.max(dataset, function(d) {return d['VehicleTheftCount2003']+plotPadY;}),
+					 		d3.max(dataset, function(d) {return d['VehicleTheftCount2015']+plotPadY;})
+					 	 )])
+						 .range([h - padding, 0]);
+	var rScale = d3.scale.linear()
+						 .domain([
+						 	Math.min(
+						 		d3.min(dataset, function(d) {return Math.sqrt(d['TotalCrime2003']);}),
+						 		d3.min(dataset, function(d) {return Math.sqrt(d['TotalCrime2015']);})), 
+						 	Math.max(
+						 		d3.max(dataset, function(d) {return Math.sqrt(d['TotalCrime2003']);}),
+						 		d3.max(dataset, function(d) {return Math.sqrt(d['TotalCrime2015']);}))
+						 ])
+					     .range([1,30]);
+
+	//Define X axis
+	var xAxis = d3.svg.axis()
+					  .scale(xScale)
+					  .orient("bottom")
+					  .ticks(10);
+
+	//Define Y axis
+	var yAxis = d3.svg.axis()
+					  .scale(yScale)
+					  .orient("left")
+					  .ticks(5);
+
+	//Create SVG element
+	var svg = d3.select(".Viz1")
+				.append("svg")
+				.attr("width", w)
+				.attr("height", h);
+
+
+
+	var tip = d3.tip()
+	  .attr('class', 'd3-tip')
+	  .offset([0,100])
+	  .html(function(d) {
+	    return 	"<div  class='tiphead' ><strong>"+ d['Districts'] +"</strong></div>" + 
+	    		"<div><strong>Total Crimes:</strong> <span class='tipperCol' >" + d['TotalCrime'+year] + "</span></div>" +
+	     		"<div><strong>Vehicle Theft:</strong> <span class='tipperCol' >" + d['VehicleTheftCount'+year] + "</span></div>" + 
+	     		"<div><strong>Prostitution:</strong> <span class='tipperCol' >" + d['ProstitutionCount'+year] + "</span></div>" ;
+	  });
+	svg.call(tip);
+
+	var circles = svg.selectAll("circle")
+					 .data(dataset)
+					 .enter()
+					 .append("circle")
+					 .on('mouseover', tip.show)
+      		   		 .on('mouseout', tip.hide);
+
+	var texter = svg.selectAll("text")
+					.data(dataset)
+					.enter()
+					.append("text")
+
+	var year = '2003'
+	var colors = ['#CE4446','#499343']
+
+	//Initialize circles and text
+	createCrimeCircles(year,circles)
+	createTextLabels(year, texter,colors[1])
+
+
+	d3.select("button").on("click", function(){
+
+		var buttonID = d3.select(this).attr("id");
+
+		if (buttonID == "id2003") {
+
+			year = '2015';
+			d3.select(this).attr("id","id2015")
+			color = colors[0]
+
+		} else if (buttonID = "id2015") {
+
+			year = '2003'
+			d3.select(this).attr("id","id2003")
+			color = colors[1]
+		} else {
+			console.log("Something wen't wrong, please reload page")
+		}
+
+		createCrimeCircles(year,circles)
+		createTextLabels(year, texter,color)
+	});
+	function createCrimeCircles(year,circles) {
+		circles.transition()
+	   		   .duration(1000)
+	   		   .ease("linear") // Other possabilities, "linear", "cirlce", "elastic"
+			   .attr("cx", function(d) {
+			   		return xScale(d['ProstitutionCount'+year]);
+			   })
+			   .attr("cy", function(d) {
+			   		return yScale(d['VehicleTheftCount'+year]);
+			   })
+			   .attr("r", function(d) {
+			   		var r = Math.sqrt(d['TotalCrime'+year]);
+			   		return rScale(r)
+			   })
+			   .attr('stroke','#DCE2DE')
+               .attr('stroke-width',1)
+               .attr('opacity',0.75);
+	}
+
+	function createTextLabels(year,texter,color){
+		d3.select('#graph_title1').text('Data from the year: '+year)
+		d3.select('#graph_title1').style("color",color)
+		texter.transition()
+	   		  .duration(1000)
+	   		  .ease('linear')
+	   		  .text(function(d) {
+						return d.Districts;
+		   	  })
+		      .attr("x", function(d) {
+		      				radi = rScale(Math.sqrt(d['TotalCrime'+year])) +5
+					   		return xScale(d['ProstitutionCount'+year]) - radi*0.5;
+					   })
+		      .attr("y", function(d) {
+		      				radi = rScale(Math.sqrt(d['TotalCrime'+year])) + 5
+					   		return yScale(d['VehicleTheftCount'+year]) - radi;
+					   })
+		      .attr("class","labels")
+		      .attr("fill", color);
+}
+
+		//Create X axis
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + (h - padding) + ")")
+		.call(xAxis);
+
+	//Create Y axis
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(" + padding + ",0)")
+		.call(yAxis);
+
+	// Making the x and y axis more nice
+	svg.append("text")
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (padding/2) +","+(h/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+        .text("Frequency of Vehicle Theft");
+    svg.append("text")
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (w/2-50) +","+(h-(padding/2))+")")  // centre below axis
+        .text("Frequency of Prostitution Instances Documented");
+
+});
+
+//---------------------Vizualizessation 2----------------
+	w = 600;
+	h = 600;
+	var r = 3;
+	var factor = 2;
+
+	var margin = {top: 50, right: 50, bottom: 50, left: 50},
+    				width = w - margin.left - margin.right,
+    				height = h - margin.top - margin.bottom;
+
+	var svg = d3.select(".VizContainer1").append("svg")
+			    .attr("width", width + margin.left + margin.right)
+			    .attr("height", height + margin.top + margin.bottom)
+	
+	var mapGroup = svg.append("g");
+	var circleGroup = svg.append("g");
+	var circleGroup2 = svg.append("g");
+
+	var tip = d3.tip()
+	  .attr('class', 'd3-tip')
+	  .offset([0,0])
+	  .html(function(d) {
+	    return "<span class='tipperCol' >" + d['properties']['DISTRICT'] + "</span>" ;
+	  });
+	svg.call(tip);	    
+
+	var projection = d3.geo.mercator()
+						    .center([-122.433701, 37.767683])
+						    .scale(160000)
+						    .translate([width / 2, height / 2]);
+    var path = d3.geo.path().projection(projection);
+
+
+
+	createSFPDmap()
+
+
+	d3.json("kmeansdata.json", function(json){
+		console.log(json)
+		var buttonID = "K2";
+
+		var circles = circleGroup.selectAll("circle")
+						 .data(json.Coordinates)
+						 .enter()
+						 .append("circle")
+						 .attr("cx", function(d) {
+							   return projection([d[0], d[1]])[0];
+						  })
+						 .attr("cy", function(d) {
+							   return projection([d[0], d[1]])[1];
+						   })
+						 .attr("r", r)
+						 .style("opacity",0.75);
+	
+		d3.selectAll(".kButton").on("click", function(){
+			buttonID = d3.select(this).attr("id")
+			changeLabels(circles,buttonID)
+			drawMean(json.Mean,buttonID)
+			console.log(buttonID)
+			
+		});
+
+		d3.selectAll(".kButton").on("mouseover", function(){
+
+			var buttonIDtemp = d3.select(this).attr("id")
+			changeLabels(circles,buttonIDtemp)
+			drawMean(json.Mean,buttonIDtemp)
+			console.log('hover: buttonIDtemp')
+			console.log(buttonIDtemp)
+		});
+
+		d3.selectAll(".kButton").on("mouseout", function(){
+			changeLabels(circles,buttonID)
+			drawMean(json.Mean,buttonID)
+
+		});
+
+
+
+		changeLabels(circles,'K2')
+		drawMean(json.Mean,'K2')
+
+		function changeLabels(circles,kID) {
+
+		d3.select("#graph_title2").text('Map with K means for K = '+kID[1].toString())
+
+		circles
+		   .data(json[kID+'labels'])
+		   .attr("class", function(d){
+		   		return 'K'+d.toString()
+		   })
+		}
+
+
+		function drawMean(meanData,kID) {
+
+		circleGroup2.selectAll("circle").remove()
+		id = kID[1]-2;
+		circleGroup2.selectAll("circle")
+					.data(meanData[id])
+					.enter()
+					.append("circle")
+					.attr("cx", function(d) {
+					   return projection([d[0], d[1]])[0];
+					})
+					.attr("cy", function(d) {
+					   return projection([d[0], d[1]])[1];
+					})
+					.attr("class", function(d, i) {
+						return 'meanCircles K'+i.toString()
+					})
+					.attr("r", 15)
+					.attr("opacity", 1)
+
+		}
+	});
+
+
+    function createSFPDmap() {
+		d3.json("sfpddistricts.geojson", function(json) {
+			console.log(json.features)
+	        mapGroup.selectAll("path")
+	           .data(json.features)
+	           .enter()
+	           .append("path")
+	           .attr("d", path)
+           	   .on('mouseover', tip.show)
+  		   	   .on('mouseout', tip.hide)
+	           .attr('stroke-width',0.5)
+			   .attr('stroke',"#626262")
+			   .attr('class','mapDistrict')
+		});
+	}
+	</script>
+</body>
+</html>

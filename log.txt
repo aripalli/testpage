@@ -1,0 +1,1 @@
+http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
