@@ -1,0 +1,99 @@
+body {
+	background-color: white;
+	font-family: "sans serif";
+	font-size: 18px;
+}
+p {
+	/*text-align: center;*/
+	font-size: 1em;
+    /*padding-top:4em;*/
+	/*font-weight: bold*/
+}
+
+
+h2 {
+    padding-top:2em;
+    padding-bottom: 1em;
+}
+h6 {
+    padding-top: 2em;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+.mean_circles {
+    stroke:#000000;
+    stroke-width: 2;
+}
+
+
+.p_data_1{
+    font-weight: bold
+}
+
+#area1 {
+    text-align:center;
+}
+
+#area3 {
+    text-align:center;
+}
+
+.visual-buttons {
+    text-align: center;
+}
+.visual-button {
+    /*align:center;*/
+    /*font-family: inherit;*/
+    font-size: 1em;
+    /*font-weight: bold;*/
+    /*padding-right: 1em;*/
+    /*border: none;*/
+    /*background: none;*/
+}
+
+.visual-container {
+    padding-bottom:2em;
+    padding-top:1em;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+#tip-container {
+    margin-bottom: 10px;
+}
