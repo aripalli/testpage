@@ -14,7 +14,6 @@ body {
 	padding:0;
 }
 
-
 /** element defaults **/
 table {
 	width:100%;
@@ -80,6 +79,20 @@ a.button:hover {
 a.button-reversed:hover {
 	background-color: #222;
 }
+
+button { 
+    background-color: #80B763;
+    border-radius: 5px;
+    color: #FFFFFF;
+    display: inline-block;
+    font-weight: bold;
+    padding: 8px 22px;
+    font-size: 0.8em;
+    letter-spacing: 0.25px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
 fieldset {
 	display:block;
 	border:none;
